@@ -635,11 +635,11 @@ namespace Rocket_Elevators_RESTAPI2._0.Models
                     .HasColumnName("employee_id");
 
                 entity.Property(e => e.StartDate)
-                    .HasColumnType("Datetime")
+                    .HasColumnType("DateTime")
                     .HasColumnName("start_date");
 
                 entity.Property(e => e.EndDate)
-                    .HasColumnType("Datetime")
+                    .HasColumnType("DateTime")
                     .HasColumnName("end_date");
 
                 entity.Property(e => e.Report).HasColumnName("report");

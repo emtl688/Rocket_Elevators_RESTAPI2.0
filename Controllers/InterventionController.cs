@@ -42,7 +42,7 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
         }
 
 
-        // Returns all fields of all intervention Request records that do not have a start date and are in "Pending" status.
+        //GET: Returns all fields of all intervention Request records that do not have a start date and are in "Pending" status.
         // GET https://localhost:5001/api/intervention/pending
         [HttpGet("pending")]
         public IEnumerable<Intervention> GetPendingInterventions()
@@ -55,35 +55,37 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
             return Interventions.ToList();
         }
 
-        // PUT: api/Intervention/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutIntervention(long id, Intervention intervention)
+        // PUT: Change the status of the intervention request to "InProgress" and add a start date and time (Timestamp).
+        // PUT: Change the status of the request for action to "Completed" and add an end date and time (Timestamp).
+        // https://localhost:5001/api/intervention/{id}/{status}
+        [HttpPut("{id}/{status}")]
+        public async Task<ActionResult<Intervention>> PutInProgress(long id, string status)
         {
-            if (id != intervention.Id)
+
+            if (status == "InProgress")
+            {
+                var intervention = await _context.Interventions.FindAsync(id);
+                intervention.StartDate = System.DateTime.Now;
+                intervention.Status = status;
+                await _context.SaveChangesAsync();
+                return intervention;
+            }
+            else if (status == "Completed")
+            {
+                var intervention = await _context.Interventions.FindAsync(id);
+                intervention.Status = status;
+                intervention.EndDate = System.DateTime.Now;
+                await _context.SaveChangesAsync();
+                return intervention;
+            }
+            else
             {
                 return BadRequest();
             }
 
-            _context.Entry(intervention).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InterventionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
+
+
 
         // POST: api/Intervention
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
