@@ -1,0 +1,9 @@
+/appsettings.json
+
+/obj/
+
+/bin/
+
+/appsettings.Development.json
+obj/Debug/net5.0/Rocket_Elevators_RESTAPI2.0.assets.cache
+/.vscode/
