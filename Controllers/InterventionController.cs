@@ -41,8 +41,21 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
             return intervention;
         }
 
+
+        // Returns all fields of all intervention Request records that do not have a start date and are in "Pending" status.
+        // GET https://localhost:5001/api/intervention/pending
+        [HttpGet("pending")]
+        public IEnumerable<Intervention> GetPendingInterventions()
+        {
+            IQueryable<Intervention> Interventions =
+            from list_ints in _context.Interventions
+            where list_ints.StartDate == null && list_ints.Status == "Pending"
+            select list_ints;
+
+            return Interventions.ToList();
+        }
+
         // PUT: api/Intervention/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutIntervention(long id, Intervention intervention)
         {

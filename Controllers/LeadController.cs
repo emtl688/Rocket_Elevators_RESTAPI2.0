@@ -42,7 +42,6 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
         }
 
         // PUT: api/Lead/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLead(long id, Lead lead)
         {
