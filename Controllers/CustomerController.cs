@@ -40,5 +40,43 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
 
             return customer;
         }
+
+        // Get all the assets belonging to a customer using their ID
+        // GET: api/Customer/example@email.com
+        [HttpGet("{email}")]
+        public async Task<ActionResult<Customer>> GetCustomer(string email)
+        {
+            var customer = await _context.Customers.Include("Buildings.Batteries.Columns.Elevators")
+                                                .Where(c => c.EmailOfCompanyContact == email)
+                                                .FirstOrDefaultAsync();
+
+            // customer = await _context.customers.Include("Buildings.Addresses")
+            //                                     .Where(c => c.cpy_contact_email == email)
+            //                                     .FirstOrDefaultAsync();          
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return customer;
+        }
+
+        // Verify email exists in DB for customer registration in Portal
+        // GET: api/Customer/verify/example@email.com
+        [HttpGet("verify/{email}")]
+        public async Task<ActionResult> VerifyEmail(string email)
+        {
+            var customer = await _context.Customers.Include("Buildings.Batteries.Columns.Elevators")
+                                                .Where(c => c.EmailOfCompanyContact == email)
+                                                .FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
     }
 }
