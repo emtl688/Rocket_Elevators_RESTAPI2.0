@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,40 +10,27 @@ using Rocket_Elevators_RESTAPI2._0.Models;
 
 namespace Rocket_Elevators_RESTAPI2._0.Controllers
 {
-    [Route("api/[controller]")]
+
+    [Route("api/Customers")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly RailsApp_developmentContext _context;
 
-        public CustomerController(RailsApp_developmentContext context)
+        public CustomersController(RailsApp_developmentContext context)
         {
             _context = context;
         }
 
-        // GET: api/Customer
+        // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Customer>>> Getcustomers()
         {
             return await _context.Customers.ToListAsync();
         }
 
-        // GET: api/Customer/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(long id)
-        {
-            var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return customer;
-        }
-
-        // Get all the assets belonging to a customer using their ID
-        // GET: api/Customer/example@email.com
+        // ========== Get all the infos about a customer (buildings, batteries, columns, elevators) using the customer_id ==========
+        // GET: api/Customers/example@client.com
         [HttpGet("{email}")]
         public async Task<ActionResult<Customer>> GetCustomer(string email)
         {
@@ -62,8 +50,8 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
             return customer;
         }
 
-        // Verify email exists in DB for customer registration in Portal
-        // GET: api/Customer/verify/example@email.com
+        // ========== Verify email for register at the Customer's Portal =========================================================================
+        // GET: api/Customers/verify/example@client.com
         [HttpGet("verify/{email}")]
         public async Task<ActionResult> VerifyEmail(string email)
         {
@@ -79,31 +67,31 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
             return Ok();
         }
 
-        // To update customer info via Customer Portal
-        // PUT: api/Customer/example@email.com
+        // ========== Put for update the customer infos =========================================================================
+        // PUT: api/Customers/example@client.com
         [HttpPut]
         public async Task<ActionResult<Customer>> PutCustomer(Customer customer)
         {
-            var updatedCustomer = await _context.Customers
+            var customerToUpdate = await _context.Customers
                                                 .Where(c => c.EmailOfCompanyContact == customer.EmailOfCompanyContact)
                                                 .FirstOrDefaultAsync();
 
-            if (updatedCustomer == null)
+            if (customerToUpdate == null)
             {
                 return NotFound();
             }
 
-            updatedCustomer.CompanyName = customer.CompanyName;
-            updatedCustomer.FullNameOfCompanyContact = customer.FullNameOfCompanyContact;
-            updatedCustomer.CompanyContactPhone = customer.CompanyContactPhone;
-            updatedCustomer.FullNameOfServiceTechnicalAuthority = customer.FullNameOfServiceTechnicalAuthority;
-            updatedCustomer.TechnicalAuthorityPhoneForService = customer.TechnicalAuthorityPhoneForService;
-            updatedCustomer.TechnicalManagerEmailForService = customer.TechnicalManagerEmailForService;
-            updatedCustomer.CompanyDescription = customer.CompanyDescription;
+            customerToUpdate.CompanyName = customer.CompanyName;
+            customerToUpdate.FullNameOfCompanyContact = customer.FullNameOfCompanyContact;
+            customerToUpdate.CompanyContactPhone = customer.CompanyContactPhone;
+            customerToUpdate.FullNameOfServiceTechnicalAuthority = customer.FullNameOfServiceTechnicalAuthority;
+            customerToUpdate.TechnicalAuthorityPhoneForService = customer.TechnicalAuthorityPhoneForService;
+            customerToUpdate.TechnicalManagerEmailForService = customer.TechnicalManagerEmailForService;
+            customerToUpdate.CompanyDescription = customer.CompanyDescription;
 
             await _context.SaveChangesAsync();
 
-            return updatedCustomer;
+            return customerToUpdate;
         }
     }
 }
