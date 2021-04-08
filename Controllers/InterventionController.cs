@@ -85,17 +85,18 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
 
         }
 
-
-
-        // POST: api/Intervention
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Intervention>> PostIntervention(Intervention intervention)
+        public async Task<ActionResult<Intervention>> PostIntervention(Intervention newIntervention)
         {
-            _context.Interventions.Add(intervention);
+            newIntervention.StartDate = DateTime.Now;
+            newIntervention.Status = "InProgress";
+            newIntervention.Result = "Incomplete";
+            newIntervention.EmployeeId = null;
+
+            _context.Interventions.Add(newIntervention);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetIntervention", new { id = intervention.Id }, intervention);
+            return newIntervention;
         }
 
         // DELETE: api/Intervention/5
