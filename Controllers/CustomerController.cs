@@ -78,5 +78,32 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
 
             return Ok();
         }
+
+        // To update customer info via Customer Portal
+        // PUT: api/Customer/example@email.com
+        [HttpPut]
+        public async Task<ActionResult<Customer>> PutCustomer(Customer customer)
+        {
+            var updatedCustomer = await _context.Customers
+                                                .Where(c => c.EmailOfCompanyContact == customer.EmailOfCompanyContact)
+                                                .FirstOrDefaultAsync();
+
+            if (updatedCustomer == null)
+            {
+                return NotFound();
+            }
+
+            updatedCustomer.CompanyName = customer.CompanyName;
+            updatedCustomer.FullNameOfCompanyContact = customer.FullNameOfCompanyContact;
+            updatedCustomer.CompanyContactPhone = customer.CompanyContactPhone;
+            updatedCustomer.FullNameOfServiceTechnicalAuthority = customer.FullNameOfServiceTechnicalAuthority;
+            updatedCustomer.TechnicalAuthorityPhoneForService = customer.TechnicalAuthorityPhoneForService;
+            updatedCustomer.TechnicalManagerEmailForService = customer.TechnicalManagerEmailForService;
+            updatedCustomer.CompanyDescription = customer.CompanyDescription;
+
+            await _context.SaveChangesAsync();
+
+            return updatedCustomer;
+        }
     }
 }
