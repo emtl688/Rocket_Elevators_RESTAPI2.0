@@ -13,11 +13,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Rocket_Elevators_RESTAPI2._0.Models;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Rocket_Elevators_RESTAPI2._0
 {
     public class Startup
     {
+        private const Newtonsoft.Json.ReferenceLoopHandling ignore = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,6 +43,12 @@ namespace Rocket_Elevators_RESTAPI2._0
             services.AddDbContext<RailsApp_developmentContext>(dbContextOptions =>
                 dbContextOptions.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc();
+
+            services.AddMvc().AddNewtonsoftJson(setupAction: options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ignore;
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
