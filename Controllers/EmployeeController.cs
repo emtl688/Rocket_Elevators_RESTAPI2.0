@@ -40,5 +40,23 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
 
             return employee;
         }
+
+        //Validate user is a employee during registration
+        // GET: api/Employee/Email/{federico@yost.biz}
+        [HttpGet("Email/{email}")]
+        public async Task<ActionResult<Employee>> GetEmployeeEmail(string email)
+        {
+
+            IEnumerable<Employee> employeesAll = await _context.Employees.ToListAsync();
+
+            foreach (Employee employee in employeesAll)
+            {
+                if (employee.Email == email)
+                {
+                    return employee;
+                }
+            }
+            return NotFound();
+        }
     }
 }
