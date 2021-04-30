@@ -72,23 +72,36 @@ namespace Rocket_Elevators_RESTAPI2._0.Controllers
         }
 
         // Modifies status of an existing Elevator in our database
-        // PUT https://localhost:5001/api/elevator/[ID]
+        // PUT https://localhost:5001/api/elevator/[ID]/Status
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutElevator(long id, Elevator elevator)
+        public async Task<IActionResult> PutmodifyElevatorStatus(long id, string status)
         {
-            if (id != elevator.Id)
+            if (status == null)
             {
                 return BadRequest();
             }
-            else if (elevator.Status == "active" || elevator.Status == "inactive" || elevator.Status == "intervention")
+
+            var elevator = await _context.Elevators.FindAsync(id);
+
+            elevator.Status = status;
+
+            try
             {
-                _context.Entry(elevator).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return Content("Elevator Id: " + elevator.Id + " status has been changed to: " + elevator.Status);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ElevatorExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            return Content("Please enter a valid status.");
-
+            return NoContent();
         }
 
         // Creates a new Elevator in our database
